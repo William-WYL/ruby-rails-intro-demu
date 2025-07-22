@@ -1,6 +1,99 @@
-<h1>User Details</h1>
+<div class="container-fluid bg-white min-vh-100 py-5">
+  <div class="container">
 
-<p><strong>Name:</strong> <%= @user.name %></p>
-<p><strong>Email:</strong> <%= @user.email %></p>
+    <!-- Page Header -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h1 class="display-4 font-weight-light text-dark mb-2">User Details</h1>
+          </div>
+          <div class="text-right">
+            <i class="fas fa-user text-muted" style="font-size: 3rem;"></i>
+          </div>
+        </div>
+        <div class="border-bottom border-primary mt-3" style="width: 60px; height: 3px;"></div>
+      </div>
+    </div>
 
-<%= link_to "Back to Users", users_path %>
+    <!-- User Information -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <!-- User Avatar & Basic Info -->
+            <div class="row align-items-center mb-4">
+              <div class="col-auto">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                     style="width: 80px; height: 80px; font-size: 2rem;">
+                  <i class="fas fa-user"></i>
+                </div>
+              </div>
+              <div class="col">
+                <h3 class="font-weight-bold mb-1"><%= @user.name %></h3>
+                <p class="text-muted mb-0">
+                  <i class="fas fa-envelope mr-2"></i>
+                  <%= @user.email %>
+                </p>
+              </div>
+            </div>
+
+            <!-- Detailed Information -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div class="border-left border-primary pl-3">
+                  <small class="text-muted text-uppercase font-weight-bold" style="letter-spacing: 0.5px;">
+                    Name
+                  </small>
+                  <p class="h6 mb-0 mt-1"><%= @user.name %></p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="border-left border-primary pl-3">
+                  <small class="text-muted text-uppercase font-weight-bold" style="letter-spacing: 0.5px;">
+                    Email
+                  </small>
+                  <p class="h6 mb-0 mt-1"><%= @user.email %></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="row">
+      <div class="col-12">
+        <%= link_to users_path, class: "btn btn-outline-primary" do %>
+          <i class="fas fa-arrow-left mr-2"></i>Back to Users
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .btn-outline-primary:hover {
+    transform: translateY(-1px);
+  }
+
+  .border-left {
+    border-left: 3px solid !important;
+  }
+
+  @media (max-width: 768px) {
+    .display-4 {
+      font-size: 2rem;
+    }
+
+    .row.align-items-center {
+      text-align: center;
+    }
+
+    .col-auto {
+      margin: 0 auto 1rem auto;
+    }
+  }
+</style>
