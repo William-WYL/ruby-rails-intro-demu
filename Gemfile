@@ -65,3 +65,4 @@ end
 gem "faker", "~> 3.5"
 gem "httparty", "~> 0.23.1"
 gem "kaminari"
+gem "kaminari-bootstrap"

@@ -5,6 +5,16 @@
       <p class="lead">$<%= @product.price %></p>
       <p><%= @product.description %></p>
       <p>Category: <%= link_to @product.category.name, category_path(@product.category) %></p>
+
+      <!-- Tags Section -->
+      <% if @product.tags.any? %>
+        <p>
+          Tags:
+          <% @product.tags.each do |tag| %>
+            <span class="badge bg-primary"><%= tag.name %></span> |
+          <% end %>
+        </p>
+      <% end %>
     </div>
 
     <div class="col-md-6">
