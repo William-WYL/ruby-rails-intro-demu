@@ -1,0 +1,12 @@
+<h1><%= @category.name %></h1>
+
+<p><strong>Products:</strong></p>
+<ul>
+  <% @category.products.each do |product| %>
+    <li>
+      <%= link_to product.title, product_path(product) %> - $<%= sprintf("%.2f", product.price) %>
+    </li>
+  <% end %>
+</ul>
+
+<%= link_to "Back to Categories", categories_path %>

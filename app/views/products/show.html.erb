@@ -1,0 +1,20 @@
+<h1><%= @product.title %></h1>
+
+<p><strong>Price:</strong> $<%= sprintf("%.2f", @product.price) %></p>
+
+<p><strong>Description:</strong></p>
+<p><%= @product.description %></p>
+
+<p><strong>Category:</strong>
+  <% if @product.category %>
+    <%= link_to @product.category.name, category_path(@product.category) %>
+  <% else %>
+    None
+  <% end %>
+</p>
+
+<% if @product.image_url.present? %>
+  <img src="<%= @product.image_url %>" alt="<%= @product.title %>" style="max-width: 300px;" />
+<% end %>
+
+<%= link_to "Back to Products", products_path %>
