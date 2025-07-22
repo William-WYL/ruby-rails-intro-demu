@@ -1,5 +1,6 @@
 require "faker"
 require "httparty"
+require "csv"
 
 # Clear existing data from the database (in order to avoid FK conflicts)
 OrderItem.delete_all
@@ -9,10 +10,9 @@ Product.delete_all
 Category.delete_all
 User.delete_all
 
-# 1. Import categories from an array (simulating CSV)
-categories = ["electronics", "women's clothing", "men's clothing", "jewelery"]
-categories.each do |name|
-  Category.create!(name: name)
+# Import categories from CSV file
+CSV.foreach(Rails.root.join("db", "categories.csv"), headers: true) do |row|
+  Category.create!(name: row["name"])
 end
 
 # 2. Import products from the FakeStore API
