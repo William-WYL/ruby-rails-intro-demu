@@ -1,6 +1,178 @@
-<h1>Orders</h1>
-<ul>
-  <% @orders.each do |order| %>
-    <li><%= link_to "Order ##{order.id}", order_path(order) %> — User: <%= order.user.name %>, Total: $<%= order.total %></li>
-  <% end %>
-</ul>
+<div class="container-fluid bg-white min-vh-100 py-5">
+  <div class="container">
+
+    <!-- Page Header -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h1 class="display-4 font-weight-light text-dark mb-2">Orders</h1>
+            <p class="text-muted mb-0">
+              <i class="fas fa-shopping-bag mr-2"></i>
+              <%= pluralize(@orders.count, "order") %> found
+            </p>
+          </div>
+          <div class="text-right">
+            <i class="fas fa-clipboard-list text-muted" style="font-size: 3rem;"></i>
+          </div>
+        </div>
+        <div class="border-bottom border-primary mt-3" style="width: 60px; height: 3px;"></div>
+      </div>
+    </div>
+
+    <% if @orders.any? %>
+      <!-- Orders List -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light border-0 py-3">
+              <div class="row align-items-center text-muted small font-weight-bold text-uppercase" style="letter-spacing: 0.5px;">
+                <div class="col-md-3">Order Details</div>
+                <div class="col-md-3 d-none d-md-block">Customer</div>
+                <div class="col-md-2 d-none d-md-block text-center">Status</div>
+                <div class="col-md-2 d-none d-md-block text-center">Total</div>
+                <div class="col-md-2 d-none d-md-block text-center">Actions</div>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <% @orders.each_with_index do |order, index| %>
+                <div class="border-bottom <%= "border-0" if index == @orders.count - 1 %> py-3 px-4">
+                  <div class="row align-items-center">
+
+                    <!-- Order Details -->
+                    <div class="col-12 col-md-3 mb-2 mb-md-0">
+                      <div class="d-flex align-items-center">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mr-3"
+                             style="width: 40px; height: 40px; font-size: 0.8rem;">
+                          #<%= order.id %>
+                        </div>
+                        <div>
+                          <h6 class="mb-1 font-weight-bold">Order #<%= order.id %></h6>
+                          <small class="text-muted">
+                            <i class="fas fa-calendar mr-1"></i>
+                            <%= order.created_at.strftime("%b %d, %Y") if order.respond_to?(:created_at) %>
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Customer Info -->
+                    <div class="col-12 col-md-3 mb-2 mb-md-0">
+                      <div class="d-md-none">
+                        <small class="text-muted text-uppercase font-weight-bold">Customer:</small>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mr-2"
+                             style="width: 30px; height: 30px;">
+                          <i class="fas fa-user text-muted" style="font-size: 0.8rem;"></i>
+                        </div>
+                        <div>
+                          <span class="font-weight-medium"><%= order.user.name %></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-12 col-md-2 mb-2 mb-md-0 text-md-center">
+                      <div class="d-md-none">
+                        <small class="text-muted text-uppercase font-weight-bold">Status:</small>
+                      </div>
+                      <% status = order.respond_to?(:status) ? order.status : "pending" %>
+                      <% status_class = case status.to_s.downcase
+                           when "completed" then "success"
+                           when "pending" then "warning"
+                           when "cancelled" then "danger"
+                           else "secondary"
+                           end %>
+                      <span class="badge badge-<%= status_class %> px-3 py-2">
+                        <%= status.humanize %>
+                      </span>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="col-12 col-md-2 mb-2 mb-md-0 text-md-center">
+                      <div class="d-md-none">
+                        <small class="text-muted text-uppercase font-weight-bold">Total:</small>
+                      </div>
+                      <span class="h5 mb-0 font-weight-bold text-success">
+                        $<%= sprintf("%.2f", order.total) %>
+                      </span>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="col-12 col-md-2 text-md-center">
+                      <%= link_to order_path(order), class: "btn btn-outline-primary btn-sm" do %>
+                        <i class="fas fa-eye mr-1"></i>View Details
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Pagination (if using Kaminari) -->
+          <% if respond_to?(:paginate) && @orders.respond_to?(:current_page) %>
+            <div class="row mt-4">
+              <div class="col-12 d-flex justify-content-center">
+                <%= paginate @orders, theme: "twitter-bootstrap-4" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+    <% else %>
+      <!-- No Orders Message -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card border-0 bg-light">
+            <div class="card-body text-center py-5">
+              <i class="fas fa-shopping-bag text-muted mb-4" style="font-size: 4rem;"></i>
+              <h4 class="font-weight-light text-muted mb-3">No Orders Found</h4>
+              <p class="text-muted mb-4">
+                There are no orders to display at the moment.
+              </p>
+              <a href="#" class="btn btn-primary">
+                <i class="fas fa-plus mr-2"></i>Create New Order
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</div>
+
+<style>
+  .card {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .border-bottom:hover {
+    background-color: #f8f9fa;
+  }
+
+  .btn-outline-primary:hover {
+    transform: translateY(-1px);
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .display-4 {
+      font-size: 2rem;
+    }
+
+    .border-bottom {
+      margin-left: -1rem;
+      margin-right: -1rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+</style>

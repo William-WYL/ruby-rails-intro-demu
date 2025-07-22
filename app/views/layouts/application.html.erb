@@ -8,18 +8,22 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
-        <title><%= content_for(:title) || "Demu" %></title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <title><%= content_for(:title) || "Demu - Your Demo E-commerce Store" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%# Enable PWA manifest for installable apps %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
+    <!-- Favicons -->
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
@@ -28,46 +32,214 @@
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-  <body>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-          <%= link_to "Demu", root_path, class: "navbar-brand" %>
-          <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto">
-              <li class="nav-item"><%= link_to "Products", products_path, class: "nav-link" %></li>
-              <li class="nav-item"><%= link_to "Categories", categories_path, class: "nav-link" %></li>
-              <li class="nav-item"><%= link_to "About", about_path, class: "nav-link" %></li>
-              <li class="nav-item"><%= link_to "Users", users_path, class: "nav-link" %></li>
-            </ul>
-            <%= form_tag products_path, method: :get, class: "d-flex" do %>
+
+  <body class="bg-white">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+      <div class="container">
+        <!-- Brand -->
+        <%= link_to root_path, class: "navbar-brand font-weight-bold text-primary" do %>
+          <i class="fas fa-store mr-2"></i>Demu
+        <% end %>
+
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navigation Links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <%= link_to "Products", products_path,
+                  class: "nav-link font-weight-medium #{'text-primary font-weight-bold' if current_page?(products_path)}" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to "Categories", categories_path,
+                  class: "nav-link font-weight-medium #{'text-primary font-weight-bold' if current_page?(categories_path)}" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to "About", about_path,
+                  class: "nav-link font-weight-medium #{'text-primary font-weight-bold' if current_page?(about_path)}" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to "Users", users_path,
+                  class: "nav-link font-weight-medium #{'text-primary font-weight-bold' if current_page?(users_path)}" %>
+            </li>
+          </ul>
+
+          <!-- Search Form -->
+          <%= form_tag products_path, method: :get, class: "form-inline ml-auto" do %>
+            <div class="input-group">
               <%= select_tag :category_id,
                              options_from_collection_for_select(Category.all, :id, :name, params[:category_id]),
-                             include_blank: "All Categories", class: "form-select me-2" %>
-              <%= text_field_tag :search, params[:search], placeholder: "Search...", class: "form-control me-2" %>
-              <%= submit_tag "Search", class: "btn btn-outline-success" %>
-            <% end %>
+                             include_blank: "All Categories",
+                             class: "custom-select rounded-left",
+                             style: "max-width: 140px;" %>
+              <%= text_field_tag :search, params[:search],
+                  placeholder: "Search products...",
+                  class: "form-control border-left-0",
+                  style: "max-width: 200px;" %>
+              <div class="input-group-append">
+                <%= submit_tag "", class: "btn btn-primary", title: "Search", style: "border-radius: 0 0.25rem 0.25rem 0;" do %>
+                  <i class="fas fa-search"></i>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if notice %>
+      <div class="alert alert-success alert-dismissible fade show m-0" role="alert">
+        <div class="container">
+          <i class="fas fa-check-circle mr-2"></i>
+          <%= notice %>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    <% end %>
+
+    <% if alert %>
+      <div class="alert alert-danger alert-dismissible fade show m-0" role="alert">
+        <div class="container">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          <%= alert %>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Main Content -->
+    <main>
+      <%= yield %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-light border-top mt-5">
+      <div class="container">
+        <div class="row py-5">
+          <div class="col-md-6">
+            <h5 class="font-weight-bold text-primary mb-3">
+              <i class="fas fa-store mr-2"></i>Demu
+            </h5>
+            <p class="text-muted mb-3">
+              A demo e-commerce store built with Ruby on Rails, showcasing modern web development practices and clean design.
+            </p>
+          </div>
+          <div class="col-md-3">
+            <h6 class="font-weight-bold mb-3">Quick Links</h6>
+            <ul class="list-unstyled">
+              <li class="mb-2">
+                <%= link_to "Products", products_path, class: "text-muted text-decoration-none" %>
+              </li>
+              <li class="mb-2">
+                <%= link_to "Categories", categories_path, class: "text-muted text-decoration-none" %>
+              </li>
+              <li class="mb-2">
+                <%= link_to "About", about_path, class: "text-muted text-decoration-none" %>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h6 class="font-weight-bold mb-3">Contact</h6>
+            <p class="text-muted mb-2">
+              <i class="fas fa-envelope mr-2"></i>
+              <a href="mailto:youremail@example.com" class="text-muted text-decoration-none">
+                youremail@example.com
+              </a>
+            </p>
+            <p class="text-muted">
+              <i class="fas fa-globe mr-2"></i>Demo Store
+            </p>
           </div>
         </div>
-      </nav>
-    <%= yield %>
+        <div class="row border-top pt-4 pb-3">
+          <div class="col-12 text-center">
+            <p class="text-muted mb-0">
+              &copy; <%= Date.current.year %> Demu. Built with
+              <i class="fas fa-heart text-danger mx-1"></i>
+              using Ruby on Rails & Bootstrap.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+
+    <!-- Custom Styles -->
+    <style>
+      .navbar-brand {
+        font-size: 1.5rem;
+        transition: all 0.2s ease;
+      }
+
+      .navbar-brand:hover {
+        transform: scale(1.05);
+      }
+
+      .nav-link {
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .nav-link:hover {
+        color: #007bff !important;
+      }
+
+      .input-group .custom-select,
+      .input-group .form-control {
+        border-color: #ced4da;
+      }
+
+      .input-group .custom-select:focus,
+      .input-group .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+      }
+
+      .btn-primary {
+        transition: all 0.2s ease;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+      }
+
+      footer a:hover {
+        color: #007bff !important;
+      }
+
+      .alert {
+        border: none;
+        border-radius: 0;
+      }
+
+      @media (max-width: 991.98px) {
+        .form-inline {
+          margin-top: 1rem;
+          justify-content: center;
+        }
+
+        .input-group {
+          width: 100%;
+        }
+
+        .custom-select,
+        .form-control {
+          max-width: none !important;
+        }
+      }
+    </style>
   </body>
-</html>
-
-
-
-<!DOCTYPE html>
-<html>
-
-
-
-
-
-  <head>
-
-
-  </head>
-
-
 </html>
