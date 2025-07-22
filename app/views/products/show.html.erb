@@ -1,45 +1,170 @@
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-md-6">
-      <h1><%= @product.title %></h1>
-      <p class="lead">$<%= @product.price %></p>
-      <p><%= @product.description %></p>
-      <p>Category: <%= link_to @product.category.name, category_path(@product.category) %></p>
+<div class="container-fluid bg-white min-vh-100 py-5">
+  <div class="container">
 
-      <!-- Tags Section -->
-      <% if @product.tags.any? %>
-        <p>
-          Tags:
-          <% @product.tags.each do |tag| %>
-            <span class="badge bg-primary"><%= tag.name %></span> |
-          <% end %>
-        </p>
-      <% end %>
+    <!-- Breadcrumb Navigation -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb bg-transparent p-0">
+            <li class="breadcrumb-item">
+              <%= link_to "Products", products_path, class: "text-muted text-decoration-none" %>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              <%= truncate(@product.title, length: 30) %>
+            </li>
+          </ol>
+        </nav>
+      </div>
     </div>
 
-    <div class="col-md-6">
-      <h3>Reviews</h3>
-      <% if @product.reviews.any? %>
-        <% @product.reviews.each do |review| %>
-          <div class="card mb-2">
-            <div class="card-body">
-              <h5 class="card-title"><%= review.user.name %></h5>
-              <div class="text-warning">
-                <% review.rating.times do %>★<% end %>
-              </div>
-              <p class="card-text"><%= review.comment %></p>
+    <div class="row">
+      <!-- Product Image -->
+      <div class="col-lg-5 mb-4">
+        <div class="sticky-top" style="top: 2rem;">
+          <% if @product.image_url.present? %>
+            <div class="bg-light rounded shadow-sm p-4 d-flex align-items-center justify-content-center" style="min-height: 400px;">
+              <%= image_tag @product.image_url,
+                            class: "img-fluid rounded",
+                            alt: @product.title,
+                            style: "max-height: 400px; width: auto; object-fit: contain;" %>
             </div>
+          <% else %>
+            <div class="bg-light rounded shadow-sm p-4 d-flex align-items-center justify-content-center" style="min-height: 400px;">
+              <i class="fas fa-image text-muted" style="font-size: 4rem;"></i>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Product Details -->
+      <div class="col-lg-7">
+        <div class="pl-lg-4">
+          <!-- Product Title & Price -->
+          <div class="mb-4">
+            <h1 class="display-5 font-weight-light mb-3"><%= @product.title %></h1>
+            <h2 class="text-primary font-weight-bold mb-0">$<%= sprintf("%.2f", @product.price) %></h2>
           </div>
-        <% end %>
-      <% else %>
-        <p>No reviews yet</p>
-      <% end %>
+
+          <!-- Category -->
+          <div class="mb-4">
+            <h6 class="text-muted text-uppercase font-weight-bold mb-2" style="font-size: 0.8rem; letter-spacing: 1px;">Category</h6>
+            <%= link_to @product.category.name, category_path(@product.category),
+                        class: "btn btn-outline-secondary btn-sm" %>
+          </div>
+
+          <!-- Tags -->
+          <% if @product.tags.any? %>
+            <div class="mb-4">
+              <h6 class="text-muted text-uppercase font-weight-bold mb-2" style="font-size: 0.8rem; letter-spacing: 1px;">Tags</h6>
+              <div>
+                <% @product.tags.each do |tag| %>
+                  <span class="badge badge-light border mr-2 mb-1 px-3 py-2" style="font-size: 0.8rem;">
+                    <%= tag.name %>
+                  </span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Description -->
+          <div class="mb-5">
+            <h6 class="text-muted text-uppercase font-weight-bold mb-3" style="font-size: 0.8rem; letter-spacing: 1px;">Description</h6>
+            <p class="text-muted" style="line-height: 1.7; font-size: 1rem;">
+              <%= simple_format(@product.description) %>
+            </p>
+          </div>
+
+          <!-- Reviews Section -->
+          <div class="border-top pt-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <h4 class="font-weight-light mb-0">Customer Reviews</h4>
+              <% if @product.reviews.any? %>
+                <small class="text-muted">
+                  <%= pluralize(@product.reviews.count, "review") %>
+                </small>
+              <% end %>
+            </div>
+
+            <% if @product.reviews.any? %>
+              <div class="reviews-container">
+                <% @product.reviews.each do |review| %>
+                  <div class="card border-0 bg-light mb-3">
+                    <div class="card-body p-4">
+                      <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                          <h6 class="font-weight-bold mb-1"><%= review.user.name %></h6>
+                          <div class="text-warning mb-2">
+                            <% 5.times do |i| %>
+                              <i class="fas fa-star<%= i < review.rating ? "" : "-o text-muted" %>"></i>
+                            <% end %>
+                            <small class="text-muted ml-2"><%= review.rating %>/5</small>
+                          </div>
+                        </div>
+                      </div>
+                      <p class="text-muted mb-0" style="line-height: 1.6;">
+                        <%= simple_format(review.comment) %>
+                      </p>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="text-center py-5">
+                <i class="far fa-comment text-muted mb-3" style="font-size: 2rem;"></i>
+                <h6 class="text-muted font-weight-light">No reviews yet</h6>
+                <p class="text-muted small">Be the first to review this product.</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="border-top pt-4">
+          <%= link_to products_path, class: "btn btn-outline-secondary" do %>
+            <i class="fas fa-arrow-left mr-2"></i>Back to Products
+          <% end %>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<% if @product.image_url.present? %>
-  <img src="<%= @product.image_url %>" alt="<%= @product.title %>" style="max-width: 300px;" />
-<% end %>
+<style>
+  .breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: #6c757d;
+  }
 
-<%= link_to "Back to Products", products_path %>
+  .reviews-container {
+    max-height: 600px;
+    overflow-y: auto;
+  }
+
+  .reviews-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .reviews-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  .reviews-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+  }
+
+  .reviews-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+
+  @media (min-width: 992px) {
+    .sticky-top {
+      position: sticky !important;
+    }
+  }
+</style>
