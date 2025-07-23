@@ -20,32 +20,6 @@
       </div>
     </div>
 
-    <!-- Search Box -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body p-4">
-            <%= form_with url: users_path, method: :get, local: true, class: "d-flex align-items-center" do |f| %>
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text bg-light border-right-0">
-                    <i class="fas fa-search text-muted"></i>
-                  </span>
-                </div>
-                <%= f.text_field :search,
-                                 value: params[:search],
-                                 placeholder: "Search users by name or email...",
-                                 class: "form-control border-left-0",
-                                 style: "box-shadow: none;" %>
-                <div class="input-group-append">
-                  <%= f.submit "Search", class: "btn btn-primary" %>
-                </div>
-              </div>
-            <% end %>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <% if @users.any? %>
       <!-- Users List -->

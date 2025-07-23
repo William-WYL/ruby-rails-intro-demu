@@ -62,6 +62,46 @@
       </div>
     </div>
 
+    <!-- User Reviews -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <h4 class="text-dark mb-3">User Reviews</h4>
+        <% if @user.reviews.any? %>
+          <ul class="list-group">
+            <% @user.reviews.each do |review| %>
+              <li class="list-group-item">
+                <strong><%= review.product.title %></strong><br>
+                Rating: <%= review.rating %> / 5<br>
+                Comment: <%= review.comment %>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="text-muted">This user has not posted any reviews.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- User Orders -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <h4 class="text-dark mb-3">User Orders</h4>
+        <% if @user.orders.any? %>
+          <ul class="list-group">
+            <% @user.orders.each do |order| %>
+              <li class="list-group-item">
+                <%= link_to "Order ##{order.id}", order_path(order) %><br>
+                Placed on: <%= order.created_at.strftime("%B %d, %Y") %><br>
+                Total: $<%= order.total %>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="text-muted">No orders found for this user.</p>
+        <% end %>
+      </div>
+    </div>
+
     <!-- Back Button -->
     <div class="row">
       <div class="col-12">
